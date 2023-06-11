@@ -1,0 +1,35 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build and data directories
+.bin/
+data/
+node_modules/
+dist/
+dist-electron/
+dist-ssr/
+build/bin/
+release/
+*.local
+
+# Editor directories and files
+.vscode/*
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary
+.temp/
+.tmp/
+temp/
+tmp/
