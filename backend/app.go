@@ -17,13 +17,16 @@ const Title = "MediaOrganizer"
 
 type App struct {
 	ctx   context.Context
-	State *AppState
+	state *AppState
+
+	Settings *Settings
 }
 
 func NewApp() *App {
 	app := &App{
-		State: LoadAppState(),
+		state: LoadAppState(),
 	}
+	app.LoadSettings(app.state.SettingsPath)
 	return app
 }
 
@@ -33,26 +36,46 @@ func (app *App) Startup(ctx context.Context) {
 }
 
 func (app *App) DomReady(ctx context.Context) {
-	setWindowState(app.ctx, app.State.Window)
+	setWindowState(app.ctx, app.state.Window)
 }
 
 func (app *App) BeforeClose(ctx context.Context) bool {
-	app.State.Window = getWindowState(app.ctx)
-	app.State.Save()
+	app.state.Window = getWindowState(app.ctx)
+	app.state.Save()
 	return false
 }
 
 func (app *App) Shutdown(ctx context.Context) {
 }
 
+func (app *App) OpenDirectoryDialog() string {
+	dir, err := runtime.OpenDirectoryDialog(app.ctx, runtime.OpenDialogOptions{
+		ShowHiddenFiles: true,
+	})
+	if err != nil {
+		return ""
+	}
+	return dir
+}
+
+func (app *App) OpenFileDialog() string {
+	file, err := runtime.OpenFileDialog(app.ctx, runtime.OpenDialogOptions{
+		ShowHiddenFiles: true,
+	})
+	if err != nil {
+		return ""
+	}
+	return file
+}
+
 type AppState struct {
-	SettingsFile string      `json:"settings_file"`
+	SettingsPath string      `json:"settings_path"`
 	Window       WindowState `json:"window"`
 }
 
 func LoadAppState() *AppState {
 	state := &AppState{
-		SettingsFile: fmt.Sprintf("./%s.json", strings.ToLower(Title)),
+		SettingsPath: fmt.Sprintf("./%s.json", strings.ToLower(Title)),
 	}
 
 	path := getAppStateFilePath()

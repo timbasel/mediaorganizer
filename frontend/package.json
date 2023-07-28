@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@solidjs/router": "^0.8.2",
-    "solid-icons": "^1.0.11",
+    "solid-icons": "1.0.4",
     "solid-js": "^1.7.8",
     "tailwind-merge": "^1.14.0"
   },
