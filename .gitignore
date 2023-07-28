@@ -17,6 +17,7 @@ dist-ssr/
 build/bin/
 release/
 *.local
+mediaorganizer.*
 
 # Editor directories and files
 .vscode/*
