@@ -1,40 +1,27 @@
 import { FaSolidFolder } from "solid-icons/fa";
 import { Component, createSignal, onMount } from "solid-js";
-import { createStore, produce } from "solid-js/store";
+import { produce } from "solid-js/store";
 import {
   GetSettings,
   GetSettingsPath,
   LoadSettings,
   OpenDirectoryDialog,
   OpenFileDialog,
-  SaveSettings,
 } from "wails/go/backend/App";
-import { backend } from "wails/go/models";
 import { Button, Input, Spacer } from "~/components";
 import { InputArray } from "~/components/input-array";
+import { SetSettings, Settings } from "../resource";
 
 export const SettingsPage: Component = () => {
   const [settingsPath, setSettingsPath] = createSignal("");
-  const [settings, setSettings] = createStore<backend.Settings>({
-    database: "",
-    sources: [],
-    destination: "",
-
-    image_extensions: [],
-    video_extensions: [],
-  });
 
   onMount(async () => {
     setSettingsPath(await GetSettingsPath());
-    setSettings(await GetSettings());
+    SetSettings(await GetSettings());
   });
 
   const onLoad = async () => {
     await LoadSettings(settingsPath());
-  };
-
-  const onSave = async () => {
-    await SaveSettings(settings);
   };
 
   return (
@@ -58,40 +45,54 @@ export const SettingsPage: Component = () => {
       <Input
         class="w-full"
         label="Database"
-        value={settings.database}
-        onChange={(e) => setSettings("database", e.currentTarget.value)}
+        value={Settings.database}
+        onChange={(e) => SetSettings("database", e.currentTarget.value)}
       >
         <DialogButton
           type="file"
           onClick={(file) => {
-            setSettings("database", file);
+            SetSettings("database", file);
           }}
         />
       </Input>
+      <Input
+        class="w-full"
+        label="Thumbnail Directory"
+        value={Settings.thumbnailDirectory}
+        onChange={(e) => SetSettings("thumbnailDirectory", e.currentTarget.value)}
+      >
+        <DialogButton
+          type="directory"
+          onClick={(file) => {
+            SetSettings("thumbnailDirectory", file);
+          }}
+        />
+      </Input>
+
       <InputArray
         label="Sources"
         placeholder="New Source"
-        array={settings.sources}
-        onAppend={(value) => setSettings(produce((settings) => settings.sources.push(value)))}
-        onRemove={(index) => setSettings(produce((settings) => settings.sources.splice(index, 1)))}
+        array={Settings.sources}
+        onAppend={(value) => SetSettings(produce((settings) => settings.sources.push(value)))}
+        onRemove={(index) => SetSettings(produce((settings) => settings.sources.splice(index, 1)))}
       >
         <DialogButton
           type="directory"
           onClick={(directory) => {
-            setSettings(produce((settings) => settings.sources.push(directory)));
+            SetSettings(produce((settings) => settings.sources.push(directory)));
           }}
         />
       </InputArray>
       <Input
         class="w-full"
         label="Destination"
-        value={settings.destination}
-        onChange={(e) => setSettings("destination", e.currentTarget.value)}
+        value={Settings.destination}
+        onChange={(e) => SetSettings("destination", e.currentTarget.value)}
       >
         <DialogButton
           type="directory"
           onClick={(directory) => {
-            setSettings("destination", directory);
+            SetSettings("destination", directory);
           }}
         />
       </Input>
@@ -101,21 +102,15 @@ export const SettingsPage: Component = () => {
       <Input
         class="w-full"
         label="Image Extensions"
-        value={settings.image_extensions}
-        onChange={(e) => setSettings("image_extensions", e.currentTarget.value.split(","))}
+        value={Settings.imageExtensions}
+        onChange={(e) => SetSettings("imageExtensions", e.currentTarget.value.split(","))}
       />
       <Input
         class="w-full"
         label="Video Extensions"
-        value={settings.video_extensions}
-        onChange={(e) => setSettings("video_extensions", e.currentTarget.value.split(","))}
+        value={Settings.videoExtensions}
+        onChange={(e) => SetSettings("videoExtensions", e.currentTarget.value.split(","))}
       />
-
-      <div>
-        <Button class="w-full" onClick={onSave}>
-          Save Settings
-        </Button>
-      </div>
     </div>
   );
 };

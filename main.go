@@ -1,9 +1,12 @@
 package main
 
 import (
-	"changeme/backend"
 	"embed"
+	"fmt"
+	"net/http"
+	"os"
 
+	"github.com/timbasel/mediaorganizer/backend"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -11,6 +14,24 @@ import (
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+type FileLoader struct {
+	http.Handler
+}
+
+func NewFileLoader() *FileLoader {
+	return &FileLoader{}
+}
+
+func (f *FileLoader) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	filepath := req.URL.Path
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		res.WriteHeader(http.StatusBadRequest)
+		res.Write([]byte(fmt.Sprintf("Failed to load file %s", filepath)))
+	}
+	res.Write(data)
+}
 
 func main() {
 	// Create an instance of the app structure
@@ -22,7 +43,8 @@ func main() {
 		Width:  1024,
 		Height: 768,
 		AssetServer: &assetserver.Options{
-			Assets: assets,
+			Assets:  assets,
+			Handler: NewFileLoader(),
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.Startup,

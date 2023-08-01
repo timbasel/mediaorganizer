@@ -1,4 +1,4 @@
-import { Router } from "@solidjs/router";
+import { Router, hashIntegration } from "@solidjs/router";
 import { render } from "solid-js/web";
 
 import { App } from "~/app";
@@ -6,7 +6,7 @@ import "~/style.css";
 
 render(
   () => (
-    <Router>
+    <Router source={hashIntegration()}>
       <App />
     </Router>
   ),

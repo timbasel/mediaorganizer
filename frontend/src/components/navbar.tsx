@@ -1,5 +1,11 @@
 import { Link, useNavigate } from "@solidjs/router";
-import { FaSolidAngleLeft, FaSolidGear } from "solid-icons/fa";
+import {
+  FaSolidAngleLeft,
+  FaSolidChartColumn,
+  FaSolidGear,
+  FaSolidPhotoFilm,
+  FaSolidTags,
+} from "solid-icons/fa";
 import { Component, ComponentProps, ParentComponent } from "solid-js";
 
 export const NavBar: Component = () => {
@@ -12,17 +18,27 @@ export const NavBar: Component = () => {
   return (
     <nav class="bg-gray-900 shadow-4dp">
       <div class="mx-4 flex justify-between">
-        <div class="flex items-center px-8 hover:bg-black/20" onClick={() => navigate(-1)}>
-          <FaSolidAngleLeft class="h-6" />
+        <div
+          class="flex items-center px-8 hover:bg-black/20"
+          onClick={() => navigate(-1)}
+          title="Back"
+        >
+          <FaSolidAngleLeft />
         </div>
         <div class="flex items-center">
-          <NavLink href="/media">Media</NavLink>
-          <NavLink href="/people">People</NavLink>
-          <NavLink href="/tags">Tags</NavLink>
+          <NavLink href="/media" title="Media">
+            <FaSolidPhotoFilm />
+          </NavLink>
+          <NavLink href="/tags" title="Tags">
+            <FaSolidTags />
+          </NavLink>
+          <NavLink href="/statistics" title="Statistics">
+            <FaSolidChartColumn />
+          </NavLink>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" title="Settings">
           <NavLink href="/settings">
-            <FaSolidGear class="h-6" />
+            <FaSolidGear />
           </NavLink>
         </div>
       </div>

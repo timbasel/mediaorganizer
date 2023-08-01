@@ -4,11 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/adrg/xdg"
+	"github.com/timbasel/mediaorganizer/backend/db"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -20,6 +22,7 @@ type App struct {
 	state *AppState
 
 	Settings *Settings
+	DB       *db.Database
 }
 
 func NewApp() *App {
@@ -40,8 +43,12 @@ func (app *App) DomReady(ctx context.Context) {
 }
 
 func (app *App) BeforeClose(ctx context.Context) bool {
+	log.Println("Before Close")
 	app.state.Window = getWindowState(app.ctx)
-	app.state.Save()
+	err := app.state.Save()
+	if err != nil {
+		log.Println(err)
+	}
 	return false
 }
 
@@ -76,6 +83,12 @@ type AppState struct {
 func LoadAppState() *AppState {
 	state := &AppState{
 		SettingsPath: fmt.Sprintf("./%s.json", strings.ToLower(Title)),
+		Window: WindowState{
+			X:      0,
+			Y:      0,
+			Width:  1024,
+			Height: 768,
+		},
 	}
 
 	path := getAppStateFilePath()
@@ -98,8 +111,12 @@ func (state *AppState) Save() error {
 		return err
 	}
 
-	path := getAppStateFilePath()
-	err = os.WriteFile(path, data, 0644)
+	filepath := getAppStateFilePath()
+	err = os.MkdirAll(path.Dir(filepath), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filepath, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -107,22 +124,22 @@ func (state *AppState) Save() error {
 }
 
 type WindowState struct {
-	X     int `json:"x"`
-	Y     int `json:"y"`
-	SizeX int `json:"size_x"`
-	SizeY int `json:"size_y"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 func getWindowState(ctx context.Context) WindowState {
 	window := WindowState{}
 	window.X, window.Y = runtime.WindowGetPosition(ctx)
-	window.SizeX, window.SizeY = runtime.WindowGetSize(ctx)
+	window.Width, window.Height = runtime.WindowGetSize(ctx)
 	return window
 }
 
 func setWindowState(ctx context.Context, window WindowState) {
 	runtime.WindowSetPosition(ctx, window.X, window.Y)
-	runtime.WindowSetSize(ctx, window.SizeX, window.SizeY)
+	runtime.WindowSetSize(ctx, window.Width, window.Height)
 }
 
 func getAppStateFilePath() string {

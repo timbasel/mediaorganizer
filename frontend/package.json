@@ -8,7 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@solid-primitives/deep": "^0.2.1",
     "@solidjs/router": "^0.8.2",
+    "@tanstack/solid-virtual": "^3.0.0-beta.6",
+    "@tanstack/virtual-core": "^3.0.0-alpha.1",
     "solid-icons": "1.0.4",
     "solid-js": "^1.7.8",
     "tailwind-merge": "^1.14.0"

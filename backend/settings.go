@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
+
+	"github.com/adrg/xdg"
+	"github.com/timbasel/mediaorganizer/backend/db"
 )
 
 type Settings struct {
-	Database    string   `json:"database"`
+	Database           string `json:"database"`
+	ThumbnailDirectory string `json:"thumbnailDirectory"`
+
 	Sources     []string `json:"sources"`
 	Destination string   `json:"destination"`
 
-	ImageExtensions []string `json:"image_extensions"`
-	VideoExtensions []string `json:"video_extensions"`
+	ImageExtensions []string `json:"imageExtensions"`
+	VideoExtensions []string `json:"videoExtensions"`
 }
 
 func NewSettings() *Settings {
 	return &Settings{
-		Database:    fmt.Sprintf("./%s.db", strings.ToLower(Title)),
+		Database:           fmt.Sprintf("./%s.db", strings.ToLower(Title)),
+		ThumbnailDirectory: filepath.Join(xdg.CacheHome, Title, "thumbnails"),
+
 		Sources:     []string{},
 		Destination: "",
 
@@ -45,7 +53,9 @@ func LoadSettings(filepath string) (*Settings, error) {
 func LoadOrNewSettings(filepath string) *Settings {
 	settings, err := LoadSettings(filepath)
 	if err != nil {
-		return NewSettings()
+		settings := NewSettings()
+		settings.Save(filepath)
+		return settings
 	}
 	return settings
 }
@@ -70,12 +80,12 @@ func (settings *Settings) Save(filepath string) error {
 func (app *App) LoadSettings(filepath string) {
 	app.state.SettingsPath = filepath
 	app.Settings = LoadOrNewSettings(app.state.SettingsPath)
-	/*
-		if app.DB != nil {
-			app.DB.Close()
-		}
-		app.DB = db.Open(app.Settings.Database)
-	*/
+	if app.DB != nil {
+		app.DB.Close()
+	}
+	app.DB = db.Open(app.Settings.Database)
+
+	os.MkdirAll(app.Settings.ThumbnailDirectory, os.ModePerm)
 }
 
 func (app *App) SaveSettings(settings Settings) {
