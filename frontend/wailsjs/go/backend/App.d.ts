@@ -6,6 +6,8 @@ export function GenerateThumbnail(arg1:string,arg2:number):Promise<void>;
 
 export function GetMedia(arg1:backend.MediaFilter):Promise<Array<backend.Media>>;
 
+export function GetMediaByID(arg1:string):Promise<backend.Media>;
+
 export function GetMediaCount(arg1:backend.MediaFilter):Promise<number>;
 
 export function GetMediaStats():Promise<backend.MediaStats>;

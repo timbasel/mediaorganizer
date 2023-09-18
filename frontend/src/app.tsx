@@ -1,12 +1,14 @@
 import { Navigate, RouteDefinition, useRoutes } from "@solidjs/router";
 import { Component } from "solid-js";
 import { NavBar } from "~/components";
-import { MediaPage, StatisticsPage } from "~/media/pages";
+import { MediaPage, MediaViewPage } from "~/media/pages";
 import { SettingsPage } from "~/settings/pages";
+import { StatisticsPage } from "./statistics/pages";
 
 const Routes: RouteDefinition[] = [
   { path: "/", component: () => <Navigate href="/media" /> },
   { path: "/media", component: MediaPage },
+  { path: "/media/:id", component: MediaViewPage },
   { path: "/statistics", component: StatisticsPage },
   { path: "/settings", component: SettingsPage },
 ];

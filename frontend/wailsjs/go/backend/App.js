@@ -10,6 +10,10 @@ export function GetMedia(arg1) {
   return window['go']['backend']['App']['GetMedia'](arg1);
 }
 
+export function GetMediaByID(arg1) {
+  return window['go']['backend']['App']['GetMediaByID'](arg1);
+}
+
 export function GetMediaCount(arg1) {
   return window['go']['backend']['App']['GetMediaCount'](arg1);
 }

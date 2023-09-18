@@ -1,11 +1,19 @@
+import { makeCache } from "@solid-primitives/resource";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 import { Component, For, createEffect, createMemo, createResource, createSignal } from "solid-js";
 import { GetMedia, GetMediaCount, IndexSources } from "wails/go/backend/App";
 import { backend } from "wails/go/models";
 import { Button } from "~/components";
-import { Thumbnail } from "../components/thumbnail";
+import { Thumbnail } from "../components";
 
 const ROW_SIZE = 8;
+
+const [getMedia] = makeCache<backend.Media[][], backend.MediaFilter, unknown>(
+  async (filter: { limit: number; offset: number }, { value }) => {
+    const media = await GetMedia(filter);
+    return [...(value ?? []), media];
+  },
+);
 
 export const MediaPage: Component = () => {
   const [page, setPage] = createSignal(1);
@@ -18,10 +26,7 @@ export const MediaPage: Component = () => {
   );
   const [media] = createResource<backend.Media[][], backend.MediaFilter>(
     () => ({ limit: ROW_SIZE, offset: page() * ROW_SIZE }),
-    async (filter: { limit: number; offset: number }, { value }) => {
-      const media = await GetMedia(filter);
-      return [...(value ?? []), media];
-    },
+    getMedia,
     { initialValue: [] },
   );
 
@@ -38,7 +43,7 @@ export const MediaPage: Component = () => {
       count: hasNextPage() ? media().length + 1 : media().length,
       getScrollElement: () => ref,
       estimateSize: () => 392, // TODO: calculate that value somehow (currenlty it is h-96+gap-2 = 384px+8px = 392px )
-      overscan: 2,
+      overscan: 4,
     }),
   );
   createEffect(() => {

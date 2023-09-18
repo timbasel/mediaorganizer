@@ -74,6 +74,15 @@ func (app *App) GetMedia(filter MediaFilter) ([]Media, error) {
 	return media, nil
 }
 
+func (app *App) GetMediaByID(id string) (*Media, error) {
+	media := Media{}
+	err := app.DB.Find(app.ctx, &media, rel.Eq("id", id))
+	if err != nil {
+		return nil, err
+	}
+	return &media, nil
+}
+
 func (app *App) GetMediaCount(filter MediaFilter) (int, error) {
 	return app.DB.Count(app.ctx, "media")
 }
