@@ -5,6 +5,13 @@ go 1.18
 require github.com/wailsapp/wails/v2 v2.6.0
 
 require (
+	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
+	github.com/benbjohnson/clock v0.0.0-20161215174838-7dc76406b6d3 // indirect
+	github.com/gookit/color v1.5.2 // indirect
+	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
+)
+
+require (
 	github.com/adrg/xdg v0.4.0
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
@@ -21,6 +28,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/samber/lo v1.38.1 // indirect
+	github.com/timbasel/go-log v1.0.3
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect

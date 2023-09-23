@@ -20,7 +20,7 @@ export const NavBar: Component = () => {
       <div class="flex flex-col h-full justify-between">
         <div class="flex flex-col">
           <div
-            class="flex items-center p-4 hover:bg-black/20 hover:cursor-pointer"
+            class="flex items-center p-4 hover:bg-black/20 cursor-pointer"
             title="Back"
             onClick={() => navigate(-1)}
           >

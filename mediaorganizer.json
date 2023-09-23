@@ -1,0 +1,20 @@
+{
+  "database": "./mediaorganizer.db",
+  "thumbnailDirectory": "/home/timbasel/.cache/mediaorganizer/thumbnails",
+  "sources": [],
+  "destination": "",
+  "imageExtensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+  ],
+  "videoExtensions": [
+    "mp4",
+    "m4v",
+    "mkv",
+    "mov",
+    "avi",
+    "wmv"
+  ]
+}
